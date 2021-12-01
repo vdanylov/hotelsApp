@@ -6,17 +6,21 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
+  useWindowDimensions,
   View,
 } from 'react-native'
 import { loadHotels } from './src/api'
 import { HotelsListItem } from './src/components'
 import { StatusType, Hotel } from './src/types/types'
+import { Offsets } from './src/utils/constants'
 
 const DEFAULT_OFFSET = 24
 
 export default function App() {
   const [hotels, setHotels] = useState<Hotel[] | undefined>()
   const [status, setStatus] = useState<StatusType>('loading')
+  const { width } = useWindowDimensions()
+  const imageSize = width - Offsets.DEFAULT_OFFSET * 2
 
   const setStatusCallback = (status: StatusType) => () => setStatus(status)
 
@@ -43,7 +47,9 @@ export default function App() {
   )
 
   const renderHotelItem = useCallback(
-    ({ item }: { item: Hotel }) => <HotelsListItem hotel={item} />,
+    ({ item }: { item: Hotel }) => (
+      <HotelsListItem hotel={item} imageSize={imageSize} />
+    ),
     []
   )
 

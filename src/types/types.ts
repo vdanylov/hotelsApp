@@ -19,7 +19,7 @@ export interface Hotel {
   id: number
   name: string
   location: HotelLocation
-  stars: string
+  stars: number
   checkIn: CheckInOut
   checkOut: CheckInOut
   contact: Contact
