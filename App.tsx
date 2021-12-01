@@ -1,26 +1,22 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
-  ActivityIndicator,
   Button,
   FlatList,
-  Image,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
-  useWindowDimensions,
   View,
 } from 'react-native'
 import { loadHotels } from './src/api'
+import { HotelsListItem } from './src/components'
+import { StatusType, Hotel } from './src/types/types'
 
-type StatusType = 'success' | 'error' | 'loading'
 const DEFAULT_OFFSET = 24
 
 export default function App() {
-  const [hotels, setHotels] = useState()
+  const [hotels, setHotels] = useState<Hotel[] | undefined>()
   const [status, setStatus] = useState<StatusType>('loading')
-  const { width } = useWindowDimensions()
 
   const setStatusCallback = (status: StatusType) => () => setStatus(status)
 
@@ -46,29 +42,12 @@ export default function App() {
     []
   )
 
-  const renderHotelItem = ({ item: hotel }: { item: any }) => {
-    const uri = hotel?.gallery?.[0]
-    return (
-      <View
-        key={hotel.id}
-        style={[styles.itemContainer, styles.itemContainerShadow]}
-      >
-        {uri ? (
-          <Image
-            source={{ uri }}
-            style={styles.image}
-            defaultSource={require('./assets/no-preview.png')}
-          />
-        ) : (
-          <View style={styles.image} />
-        )}
-        <View style={{ padding: DEFAULT_OFFSET / 2 }}>
-          <Text>{hotel.name}</Text>
-          <Text>{hotel.name}</Text>
-        </View>
-      </View>
-    )
-  }
+  const renderHotelItem = useCallback(
+    ({ item }: { item: Hotel }) => <HotelsListItem hotel={item} />,
+    []
+  )
+
+  const keyExtractor = useCallback((item: Hotel) => item.id.toString(), [])
 
   if (status === 'error') {
     return (
@@ -84,6 +63,7 @@ export default function App() {
       <StatusBar style="auto" />
       <FlatList
         data={hotels}
+        keyExtractor={keyExtractor}
         refreshing={status === 'loading'}
         ItemSeparatorComponent={ItemSeparatorComponent}
         renderItem={renderHotelItem}
@@ -101,19 +81,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 1,
-  },
-  itemContainer: {
-    backgroundColor: '#ffffff',
-  },
-  itemContainerShadow: {
-    shadowColor: '#000000',
-    shadowRadius: 12,
-    shadowOpacity: 0.2,
-    elevation: 6,
   },
   scrollViewContent: {
     padding: DEFAULT_OFFSET,
