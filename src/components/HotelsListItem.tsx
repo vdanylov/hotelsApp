@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { Hotel } from '../types/types'
 import { Offsets } from '../utils/constants'
 import { Rating } from 'react-native-ratings'
@@ -20,12 +20,22 @@ export const HotelsListItem = ({ imageSize, hotel }: Props) => {
   return (
     <View style={[styles.itemContainer, styles.itemContainerShadow]}>
       {uri ? (
-        <Image
-          source={{ uri }}
-          resizeMode="stretch"
-          style={{ width: imageSize, height: imageSize }}
-          defaultSource={require('../../assets/no-preview.png')}
-        />
+        <ScrollView
+          horizontal
+          scrollEnabled={hotel.gallery.length > 1}
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+        >
+          {hotel.gallery.map((imageUri) => (
+            <Image
+              key={imageUri}
+              source={{ uri: imageUri }}
+              resizeMode="stretch"
+              style={{ width: imageSize, height: imageSize }}
+              defaultSource={require('../../assets/no-preview.png')}
+            />
+          ))}
+        </ScrollView>
       ) : (
         <View style={styles.image} />
       )}
@@ -61,19 +71,36 @@ export const HotelsListItem = ({ imageSize, hotel }: Props) => {
             <Text style={styles.price}>{hotel.price}</Text> {hotel.currency} p.p
           </Text>
         </View>
-        <View style={styles.row}>
-          <Text>
-            In: {hotel.checkIn.from}-{hotel.checkIn.to}
-          </Text>
-          <Text>
-            Out: {hotel.checkOut.from}-{hotel.checkOut.to}
-          </Text>
-        </View>
-        <Text style={[styles.description, styles.alignTextRight]}>
-          {hotel.contact.email}
+        <Text>
+          {hotel.location.address}, {hotel.location.city}
         </Text>
-        <Text style={[styles.description, styles.alignTextRight]}>
-          {hotel.contact.phoneNumber}
+
+        <View style={styles.row}>
+          <View>
+            <Text style={styles.description}>
+              In:{' '}
+              <Text style={styles.blackBold}>
+                {hotel.checkIn.from}-{hotel.checkIn.to}
+              </Text>
+            </Text>
+            <Text style={styles.description}>
+              Out:{' '}
+              <Text style={styles.blackBold}>
+                {hotel.checkOut.from}-{hotel.checkOut.to}
+              </Text>
+            </Text>
+          </View>
+          <View>
+            <Text style={[styles.description, styles.alignTextRight]}>
+              {hotel.contact.email}
+            </Text>
+            <Text style={[styles.description, styles.alignTextRight]}>
+              {hotel.contact.phoneNumber}
+            </Text>
+          </View>
+        </View>
+        <Text style={styles.description}>
+          lat: {hotel.location.latitude} long: {hotel.location.longitude}
         </Text>
       </View>
     </View>
@@ -112,7 +139,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   price: {
-    color: 'red',
+    color: '#CC0000',
     fontSize: 16,
   },
   rating: {
