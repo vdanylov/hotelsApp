@@ -30,3 +30,5 @@ export interface Hotel {
 }
 
 export type StatusType = 'success' | 'error' | 'loading'
+
+export type OrderSortType = 'asc' | 'desc'

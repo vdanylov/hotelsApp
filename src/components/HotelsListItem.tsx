@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     backgroundColor: '#ffffff',
+    marginHorizontal: Offsets.DEFAULT_OFFSET,
   },
   itemContainerShadow: {
     shadowColor: '#000000',
