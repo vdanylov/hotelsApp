@@ -1,4 +1,4 @@
-# hotelsApp# Hotels App
+# Hotels App #
 
 Hotels App is a list of hotels with some info.
 
